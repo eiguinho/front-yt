@@ -39,9 +39,21 @@ const TelaAdm: React.FC = () => {
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     // Implementar lógica de busca com os parâmetros selecionados
     // Exemplo:
+    if (selectedAttributes.length === 0){
+      try {
+        // Fazer a requisição ao back-end para obter todos os registros
+        const response = await fetch(`http://localhost:3000/${selectedTable}`); 
+        const data = await response.json();
+        console.log(data)
+        // setResult(JSON.stringify(data, null, 2));
+      } catch (error) {
+        console.error('Erro ao buscar dados:', error);
+        setResult('Erro ao buscar dados.');
+      }
+    }
     const searchQuery = {
       selectedTable,
       selectedAttributes,
