@@ -91,12 +91,12 @@ const TelaAdm: React.FC = () => {
     }
   };
 
-  const tables = ['Tabela1', 'Tabela2', 'Tabela3'];
+  const tables = ['channels', 'videos', 'Tabela3'];
 
   // Defina os atributos disponíveis para cada tabela
   const tableAttributes: { [key: string]: string[] } = {
-    Tabela1: ['Atributo 1', 'Atributo 2', 'Atributo 3', 'Atributo 10', 'Atributo 20', 'Atributo 30'],
-    Tabela2: ['Atributo 4', 'Atributo 5'],
+    channels: ['id', 'title', 'description', 'customUrl', 'publishedAt', 'viewCount', 'subscriberCount'],
+    videos: ['id', 'publishedAt', 'channelId', 'title', 'description', 'shortId'],
     Tabela3: ['Atributo 6', 'Atributo 7', 'Atributo 8'],
   };
 
@@ -132,7 +132,7 @@ const TelaAdm: React.FC = () => {
       {selectedTable && (
         <div className={styles.formSelect}>
         <div className={styles.selectContainer}>
-          <div>Selecione os campos que deseja retornar na consulta</div>
+          <div>Selecione os campos que deseja filtrar</div>
           <select
             className="form-select"
             multiple
@@ -149,7 +149,7 @@ const TelaAdm: React.FC = () => {
       
         {/* Repita o mesmo padrão para o próximo par de texto e select */}
         <div className={styles.selectContainer}>
-          <div>Selecione os campos que deseja filtrar</div>
+          <div>Selecione os campos que deseja retornar na consulta</div>
           <select
             className="form-select"
             multiple
