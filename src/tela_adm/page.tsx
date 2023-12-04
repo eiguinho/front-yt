@@ -1,8 +1,10 @@
 import React, { useState, ChangeEvent } from 'react';
+import styles from "./style.module.scss";
 
 const TelaAdm: React.FC = () => {
   const [selectedTable, setSelectedTable] = useState<string>('');
   const [selectedAttributes, setSelectedAttributes] = useState<string[]>([]);
+  const [selectedReturnAttribute, setSelectedReturnAttribute] = useState<string>(''); // Nova variável de estado
   const [filterAttributes, setFilterAttributes] = useState<string[]>([]);
   const [conditional, setConditional] = useState<string>('and');
   const [limit, setLimit] = useState<number | undefined>(undefined);
@@ -17,6 +19,7 @@ const TelaAdm: React.FC = () => {
 
   const handleTableChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedTable(event.target.value);
+    setSelectedReturnAttribute(''); // Limpa o atributo de retorno ao alterar a tabela
     // Resetar os atributos quando a tabela é alterada
     setSelectedAttributes([]);
     setFilterAttributes([]);
@@ -80,7 +83,7 @@ const TelaAdm: React.FC = () => {
 
   // Defina os atributos disponíveis para cada tabela
   const tableAttributes: { [key: string]: string[] } = {
-    Tabela1: ['Atributo 1', 'Atributo 2', 'Atributo 3'],
+    Tabela1: ['Atributo 1', 'Atributo 2', 'Atributo 3', 'Atributo 10', 'Atributo 20', 'Atributo 30'],
     Tabela2: ['Atributo 4', 'Atributo 5'],
     Tabela3: ['Atributo 6', 'Atributo 7', 'Atributo 8'],
   };
@@ -93,11 +96,11 @@ const TelaAdm: React.FC = () => {
   };
 
   return (
-    <div className="form">
+    <div className={styles.container}>
       {/* Título Fixo */}
-      <div>Tabela Principal</div>
 
       {/* Select para Tabela Principal */}
+      <div className="form">Tabela Principal</div>
       <select
         className="form-select"
         value={selectedTable}
@@ -115,7 +118,8 @@ const TelaAdm: React.FC = () => {
 
       {/* Select para Atributos de Retorno */}
       {selectedTable && (
-        <div>
+        <div className={styles.formSelect}>
+        <div className={styles.selectContainer}>
           <div>Selecione os campos que deseja retornar na consulta</div>
           <select
             className="form-select"
@@ -130,11 +134,9 @@ const TelaAdm: React.FC = () => {
             ))}
           </select>
         </div>
-      )}
-
-      {/* Select para Atributos de Filtragem */}
-      {selectedTable && (
-        <div>
+      
+        {/* Repita o mesmo padrão para o próximo par de texto e select */}
+        <div className={styles.selectContainer}>
           <div>Selecione os campos que deseja filtrar</div>
           <select
             className="form-select"
@@ -149,23 +151,17 @@ const TelaAdm: React.FC = () => {
             ))}
           </select>
         </div>
-      )}
-
-      {/* Select para Conditional (and/or) */}
-      <div>
-        <div>Conditional</div>
-        <select
-          className="form-select"
-          value={conditional}
-          onChange={(e) => setConditional(e.target.value)}
-        >
-          <option value="and">AND</option>
-          <option value="or">OR</option>
-        </select>
-      </div>
-
-      {/* Input para Limite */}
-      <div>
+        <div className={styles.selectContainer}>
+          <div>Conditional</div>
+          <select
+            className="form-select"
+            value={conditional}
+            onChange={(e) => setConditional(e.target.value)}
+          >
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+          </select>
+        <div className={styles.selectContainer}>
         <div>Limite</div>
         <input
           type="number"
@@ -174,13 +170,36 @@ const TelaAdm: React.FC = () => {
           onChange={(e) => setLimit(Number(e.target.value))}
         />
       </div>
-
+      </div>
+      </div>
+      )}
+      
       {/* Select para Order By */}
-      <div>
+      {selectedTable && (
+      <div className={styles.formSelect}>
+        <div className={styles.selectContainer}>
+            <div>Selecione o campo que deseja retornar na consulta</div>
+            <select
+              className="form-select"
+              value={selectedReturnAttribute}
+              onChange={(e) => setSelectedReturnAttribute(e.target.value)}
+            >
+              <option disabled hidden value="">
+                Selecione um campo
+              </option>
+              {tableAttributes[selectedTable].map((attribute) => (
+                <option key={attribute} value={attribute}>
+                  {attribute}
+                </option>
+              ))}
+            </select>
+          </div>
+      <div className={styles.selectContainer}>
         <div>Order By</div>
         <select
           className="form-select"
           value={orderBy}
+          disabled={aggregation !== 'none'}
           onChange={(e) => setOrderBy(e.target.value)}
         >
           <option value="none">Nenhum</option>
@@ -188,9 +207,7 @@ const TelaAdm: React.FC = () => {
           <option value="desc">DESC</option>
         </select>
       </div>
-
-      {/* Select para Agregação */}
-      <div>
+      <div className={styles.selectContainer}>
         <div>Agregação</div>
         <select
           className="form-select"
@@ -203,36 +220,37 @@ const TelaAdm: React.FC = () => {
           <option value="avg">AVG</option>
         </select>
       </div>
-
-      {/* Checkbox para Group By */}
-      <div>
+      <div className={styles.selectContainer}>
         <div>Group By</div>
         <input
           type="checkbox"
           checked={groupBy}
           onChange={(e) => setGroupBy(e.target.checked)}
-          disabled={orderBy !== 'none' || aggregation !== 'none'}
         />
       </div>
-
+      </div>
+      )}
       {/* Atributos Selecionados */}
-      {selectedAttributes.map((attr) => (
-        <div key={attr}>
-          <div>{attr}</div>
-          <select>
-            <option value=">">{'>'}</option>
-            <option value="<">{'<'}</option>
-            <option value="=">{'='}</option>
-            <option value=">=">{'>='}</option>
-            <option value="<=">{'<='}</option>
-            <option value="!=">{'!='}</option>
-          </select>
-          <input type="text" />
-        </div>
+
+      
+          {selectedAttributes.map((attr) => (
+            <div key={attr}>
+              <div>{attr}
+              <select>
+                <option value=">">{'>'}</option>
+                <option value="<">{'<'}</option>
+                <option value="=">{'='}</option>
+                <option value=">=">{'>='}</option>
+                <option value="<=">{'<='}</option>
+                <option value="!=">{'!='}</option>
+              </select>
+              <input type="number" className="form-control"/>
+              </div>
+            </div>
       ))}
 
       {/* Botões de Busca e Limpar */}
-      <div>
+      <div className={styles.formSelect}>
         <button onClick={handleSearch}>Buscar</button>
         <button onClick={handleClear}>Limpar</button>
       </div>

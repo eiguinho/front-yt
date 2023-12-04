@@ -1,12 +1,52 @@
 // style.module.scss
 
 .container {
-  
+
+    display: flex;
+    flex-direction: column; /* Para empilhar os elementos verticalmente */
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(178, 246, 255);
+    width: 80%; /* Largura desejada */
+    height: 100vh;
+    padding: 20px; /* Adicione algum preenchimento interno se desejar */
+    box-sizing: border-box; /* Garante que o preenchimento não afeta a largura/altura total */
+    position: fixed;
+    top: 50%; /* Centraliza verticalmente */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translate(-50%, -50%); /* Centraliza usando transform para não depender do tamanho da caixa */
+    overflow-y: auto;
+    border: 2px solid #000; /* Adiciona uma borda de 2px sólida preta */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Adiciona uma sombra com deslocamento horizontal de 5px, deslocamento vertical de 5px, desfoque de 15px e cor preta com transparência */
+    border-radius: 10px;
+    
+    .formSelect {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start; // Alinhar no início verticalmente
+        padding: 5px;
+      
+        .selectContainer {
+          display: flex;
+          flex-direction: column; // Coluna para que o texto e o select fiquem um em cima do outro
+          align-items: center; // Alinhar os elementos no centro horizontalmente
+          padding-right: 30px;
+      
+          .form-select {
+            width: 100%; // Ocupar 100% da largura do contêiner
+          }
+        }
+      }
+      
+      
+
     .header {
         display: 'flex';
         flex-direction: 'column';
         justify-content: 'space-between';
         align-items: 'center';
+        background-color: aqua;
     }
   
     .headerText {
@@ -58,23 +98,6 @@
       border: none;
     }
     .form {
-        display: flex;
-        flex-direction: column; /* Para empilhar os elementos verticalmente */
-        justify-content: space-between;
-        align-items: center;
-        background-color: rgb(178, 246, 255);
-        width: 70%; /* Largura desejada */
-        height: 70%; /* Altura desejada */
-        padding: 20px; /* Adicione algum preenchimento interno se desejar */
-        box-sizing: border-box; /* Garante que o preenchimento não afeta a largura/altura total */
-        position: fixed;
-        top: 50%; /* Centraliza verticalmente */
-        left: 50%; /* Centraliza horizontalmente */
-        transform: translate(-50%, -50%); /* Centraliza usando transform para não depender do tamanho da caixa */
-      
-        border: 2px solid #000; /* Adiciona uma borda de 2px sólida preta */
-        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Adiciona uma sombra com deslocamento horizontal de 5px, deslocamento vertical de 5px, desfoque de 15px e cor preta com transparência */
-        border-radius: 10px;
     }
       
     .backButton {
@@ -103,5 +126,17 @@
       margin-top: 8%;
       border: none;
     }
+
+    .formSection {
+        display: inline-block;
+        width: 25%; // Ajuste conforme necessário
+        margin-right: 20px; // Adapte conforme necessário
+      }
+      
+      .buttonBox {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
   }
   
