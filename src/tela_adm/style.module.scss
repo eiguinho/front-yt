@@ -3,11 +3,10 @@
 .container {
   
     .header {
-      background: linear-gradient(to right, rgb(0, 225, 255), rgb(0, 255, 255));
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4%;
+        display: 'flex';
+        flex-direction: 'column';
+        justify-content: 'space-between';
+        align-items: 'center';
     }
   
     .headerText {
@@ -58,13 +57,26 @@
       margin-right: 6%;
       border: none;
     }
-  
     .form {
-      display: flex;
-      justify-content: space-between;
-      align-items: center; /* Alinha verticalmente no centro, se necessário */
+        display: flex;
+        flex-direction: column; /* Para empilhar os elementos verticalmente */
+        justify-content: space-between;
+        align-items: center;
+        background-color: rgb(178, 246, 255);
+        width: 70%; /* Largura desejada */
+        height: 70%; /* Altura desejada */
+        padding: 20px; /* Adicione algum preenchimento interno se desejar */
+        box-sizing: border-box; /* Garante que o preenchimento não afeta a largura/altura total */
+        position: fixed;
+        top: 50%; /* Centraliza verticalmente */
+        left: 50%; /* Centraliza horizontalmente */
+        transform: translate(-50%, -50%); /* Centraliza usando transform para não depender do tamanho da caixa */
+      
+        border: 2px solid #000; /* Adiciona uma borda de 2px sólida preta */
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Adiciona uma sombra com deslocamento horizontal de 5px, deslocamento vertical de 5px, desfoque de 15px e cor preta com transparência */
+        border-radius: 10px;
     }
-  
+      
     .backButton {
       margin-left: 5%;
       margin-top: -4%;
