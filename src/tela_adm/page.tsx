@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useRef } from 'react';
 import styles from "./style.module.scss";
 
 const TelaAdm: React.FC = () => {
@@ -12,6 +12,7 @@ const TelaAdm: React.FC = () => {
   const [aggregation, setAggregation] = useState<string>('none');
   const [groupBy, setGroupBy] = useState<boolean>(false);
   const [result, setResult] = useState<string>('');
+  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
   const [selectedFields, setSelectedFields] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [logicalOperator, setLogicalOperator] = useState('and');
@@ -39,32 +40,47 @@ const TelaAdm: React.FC = () => {
     }
   };
 
+  const inputValuesRef = useRef<{ [key: string]: string }>({});
+
   const handleSearch = async () => {
-    // Implementar lógica de busca com os parâmetros selecionados
-    // Exemplo:
-    if (selectedAttributes.length === 0){
-      try {
-        // Fazer a requisição ao back-end para obter todos os registros
-        const response = await fetch(`http://localhost:3000/${selectedTable}`); 
-        const data = await response.json();
-        console.log(data)
-        // setResult(JSON.stringify(data, null, 2));
-      } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-        setResult('Erro ao buscar dados.');
-      }
+    try {
+      let inputValues: { [key: string]: string } = {};
+    // Atualize os valores associados aos atributos
+    selectedAttributes.forEach((attr) => {
+      inputValues[attr] = inputValues[attr];
+    });
+
+      const searchQuery = {
+        selectedTable,
+        selectedAttributes: selectedAttributes.join(','), // Convertendo para string
+        filterAttributes: filterAttributes.join(','), // Convertendo para string
+        conditional,
+        limit: limit?.toString() || '', // Convertendo para string
+        orderBy,
+        aggregation,
+        groupBy: groupBy.toString(), // Convertendo para string
+        inputValues: JSON.stringify(inputValuesRef.current), // MODIFIQUE ALGO PARA O VALOR VIR PARA CA
+      };
+  
+      const queryString = new URLSearchParams(searchQuery as Record<string, string>).toString();
+      const response = await fetch(`http://localhost:3000/videos/search?${queryString}`);
+      const data = await response.json();
+      console.log(data);
+      setResult(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      setResult('Erro ao buscar dados.');
     }
-    const searchQuery = {
-      selectedTable,
-      selectedAttributes,
-      filterAttributes,
-      conditional,
-      limit,
-      orderBy,
-      aggregation,
-      groupBy,
+  };
+  
+  
+
+  const handleInputChange = (attribute: string, value: string) => {
+    inputValuesRef.current = {
+      ...inputValuesRef.current,
+      [attribute]: value,
     };
-    setResult(JSON.stringify(searchQuery, null, 2));
+    console.log('Novo estado de inputValues:', inputValuesRef.current);
   };
 
   const handleClear = () => {
@@ -105,6 +121,7 @@ const TelaAdm: React.FC = () => {
     padding: '10px',
     border: '1px solid #ccc',
     borderRadius: '5px',
+    backgroundColor: 'white',
   };
 
   return (
@@ -256,7 +273,7 @@ const TelaAdm: React.FC = () => {
                 <option value="<=">{'<='}</option>
                 <option value="!=">{'!='}</option>
               </select>
-              <input type="number" className="form-control"/>
+              <input type="text" className="form-control" onChange={(event) => handleInputChange(attr, event.target.value)}/>
               </div>
             </div>
       ))}
