@@ -6,7 +6,7 @@
     flex-direction: column; /* Para empilhar os elementos verticalmente */
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(178, 246, 255);
+    background-color: rgb(239, 237, 237);
     width: 80%; /* Largura desejada */
     height: 100vh;
     padding: 20px; /* Adicione algum preenchimento interno se desejar */
@@ -98,7 +98,8 @@
       border: none;
     }
     .form {
-    }
+      font-weight: bolder;
+        }
       
     .backButton {
       margin-left: 5%;

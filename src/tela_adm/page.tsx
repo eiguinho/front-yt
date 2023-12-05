@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, useRef } from 'react';
 import styles from "./style.module.scss";
+import Table from './Table'; // Importe o componente de tabela
 
 const TelaAdm: React.FC = () => {
   const [selectedTable, setSelectedTable] = useState<string>('');
@@ -59,7 +60,8 @@ const TelaAdm: React.FC = () => {
         orderBy,
         aggregation,
         groupBy: groupBy.toString(), // Convertendo para string
-        inputValues: JSON.stringify(inputValuesRef.current), // MODIFIQUE ALGO PARA O VALOR VIR PARA CA
+        inputValues: JSON.stringify(inputValuesRef.current),
+        selectedReturnAttribute,
       };
   
       const queryString = new URLSearchParams(searchQuery as Record<string, string>).toString();
@@ -107,13 +109,16 @@ const TelaAdm: React.FC = () => {
     }
   };
 
-  const tables = ['channels', 'videos', 'Tabela3'];
+  const tables = ['channels', 'videos', 'comments','playlists', 'playlist_videos'];
 
   // Defina os atributos disponíveis para cada tabela
   const tableAttributes: { [key: string]: string[] } = {
     channels: ['id', 'title', 'description', 'customUrl', 'publishedAt', 'viewCount', 'subscriberCount'],
     videos: ['id', 'publishedAt', 'channelId', 'title', 'description', 'shortId'],
-    Tabela3: ['Atributo 6', 'Atributo 7', 'Atributo 8'],
+    comments: ['id', 'channelId', 'videoId','textDisplay','textOriginal','authorNameDisplay','authorProfileImageUrl','authorChannelUrl'
+    ,'canRate','viewerRating','likeCount','publishedAt','updatedAt'],
+    playlists:['id','publishedAt','channelId','title','description','channels'],
+    playlist_videos:['id','publishedAt','channelId','title','description','channels'],
   };
 
   const resultAreaStyle: React.CSSProperties = {
@@ -122,6 +127,7 @@ const TelaAdm: React.FC = () => {
     border: '1px solid #ccc',
     borderRadius: '5px',
     backgroundColor: 'white',
+    color: 'black',
   };
 
   return (
@@ -129,7 +135,7 @@ const TelaAdm: React.FC = () => {
       {/* Título Fixo */}
 
       {/* Select para Tabela Principal */}
-      <div className="form">Tabela Principal</div>
+      <div className={styles.form}>Tabela Principal</div>
       <select
         className="form-select"
         value={selectedTable}
@@ -149,7 +155,7 @@ const TelaAdm: React.FC = () => {
       {selectedTable && (
         <div className={styles.formSelect}>
         <div className={styles.selectContainer}>
-          <div>Selecione os campos que deseja filtrar</div>
+          <div className={styles.form}>Campos que deseja filtrar</div>
           <select
             className="form-select"
             multiple
@@ -166,7 +172,7 @@ const TelaAdm: React.FC = () => {
       
         {/* Repita o mesmo padrão para o próximo par de texto e select */}
         <div className={styles.selectContainer}>
-          <div>Selecione os campos que deseja retornar na consulta</div>
+          <div className={styles.form}>Campos que deseja retornar na consulta</div>
           <select
             className="form-select"
             multiple
@@ -181,7 +187,7 @@ const TelaAdm: React.FC = () => {
           </select>
         </div>
         <div className={styles.selectContainer}>
-          <div>Conditional</div>
+          <div className={styles.form}>Conditional</div>
           <select
             className="form-select"
             value={conditional}
@@ -191,13 +197,13 @@ const TelaAdm: React.FC = () => {
             <option value="or">OR</option>
           </select>
         <div className={styles.selectContainer}>
-        <div>Limite</div>
+        <div className={styles.form}>Limite
         <input
           type="number"
           className="form-control"
           value={limit || ''}
           onChange={(e) => setLimit(Number(e.target.value))}
-        />
+        /></div>
       </div>
       </div>
       </div>
@@ -205,60 +211,65 @@ const TelaAdm: React.FC = () => {
       
       {/* Select para Order By */}
       {selectedTable && (
-      <div className={styles.formSelect}>
-        <div className={styles.selectContainer}>
-            <div>Selecione o campo que deseja retornar na consulta</div>
-            <select
-              className="form-select"
-              value={selectedReturnAttribute}
-              onChange={(e) => setSelectedReturnAttribute(e.target.value)}
-            >
-              <option disabled hidden value="">
-                Selecione um campo
-              </option>
-              {tableAttributes[selectedTable].map((attribute) => (
-                <option key={attribute} value={attribute}>
-                  {attribute}
-                </option>
-              ))}
-            </select>
-          </div>
-      <div className={styles.selectContainer}>
-        <div>Order By</div>
-        <select
-          className="form-select"
-          value={orderBy}
-          disabled={aggregation !== 'none'}
-          onChange={(e) => setOrderBy(e.target.value)}
-        >
-          <option value="none">Nenhum</option>
-          <option value="asc">ASC</option>
-          <option value="desc">DESC</option>
-        </select>
-      </div>
-      <div className={styles.selectContainer}>
-        <div>Agregação</div>
-        <select
-          className="form-select"
-          value={aggregation}
-          onChange={(e) => setAggregation(e.target.value)}
-          disabled={orderBy !== 'none'}
-        >
-          <option value="none">Nenhum</option>
-          <option value="count">COUNT</option>
-          <option value="avg">AVG</option>
-        </select>
-      </div>
-      <div className={styles.selectContainer}>
-        <div>Group By</div>
-        <input
-          type="checkbox"
-          checked={groupBy}
-          onChange={(e) => setGroupBy(e.target.checked)}
-        />
-      </div>
-      </div>
-      )}
+  <div className={styles.formSelect}>
+    <div className={styles.selectContainer}>
+      <div className={styles.form}>Campo para realizar ordenação ou agregação</div>
+      <select
+        className="form-select"
+        value={selectedReturnAttribute}
+        onChange={(e) => setSelectedReturnAttribute(e.target.value)}
+      >
+        <option disabled hidden value="">
+          Selecione um campo
+        </option>
+        {tableAttributes[selectedTable].map((attribute) => (
+          <option key={attribute} value={attribute}>
+            {attribute}
+          </option>
+        ))}
+        <option value="none">Nenhum</option>
+      </select>
+    </div>
+
+    <div className={styles.selectContainer}>
+      <div className={styles.form}>Order By</div>
+      <select
+        className="form-select"
+        value={orderBy}
+        disabled={aggregation !== 'none' || selectedReturnAttribute === 'none'}
+        onChange={(e) => setOrderBy(e.target.value)}
+      >
+        <option value="none">Nenhum</option>
+        <option value="asc">ASC</option>
+        <option value="desc">DESC</option>
+      </select>
+    </div>
+
+    <div className={styles.selectContainer}>
+      <div className={styles.form}>Agregação</div>
+      <select
+        className="form-select"
+        value={aggregation}
+        onChange={(e) => setAggregation(e.target.value)}
+        disabled={orderBy !== 'none'}
+      >
+        <option value="none">Nenhum</option>
+        <option value="count">COUNT</option>
+        <option value="avg">AVG</option>
+      </select>
+    </div>
+
+    <div className={styles.selectContainer}>
+      <div>Group By</div>
+      <input
+        type="checkbox"
+        checked={groupBy}
+        onChange={(e) => setGroupBy(e.target.checked)}
+      />
+    </div>
+  </div>
+)}
+
       {/* Atributos Selecionados */}
 
       
@@ -286,8 +297,9 @@ const TelaAdm: React.FC = () => {
 
       {/* Resultado da Consulta */}
       <div style={resultAreaStyle}>
-        <h3>Resultado:</h3>
-        <pre>{result}</pre>
+        <h3>Consulta:</h3>
+        {/* Substitua o bloco result por este */}
+        <Table data={result ? JSON.parse(result).data || [] : []} />
       </div>
     </div>
   );
