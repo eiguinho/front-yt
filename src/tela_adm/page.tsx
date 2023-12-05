@@ -55,7 +55,7 @@ const TelaAdm: React.FC = () => {
         selectedTable,
         selectedAttributes: selectedAttributes.join(','), // Convertendo para string
         filterAttributes: filterAttributes.join(','), // Convertendo para string
-        conditional,
+        conditional, 
         limit: limit?.toString() || '', // Convertendo para string
         orderBy,
         aggregation,
@@ -65,7 +65,7 @@ const TelaAdm: React.FC = () => {
       };
   
       const queryString = new URLSearchParams(searchQuery as Record<string, string>).toString();
-      const response = await fetch(`http://localhost:3000/videos/search?${queryString}`);
+      const response = await fetch(`http://localhost:3000/${selectedTable}/search?${queryString}`);
       const data = await response.json();
       console.log(data);
       setResult(JSON.stringify(data, null, 2));
@@ -245,28 +245,7 @@ const TelaAdm: React.FC = () => {
       </select>
     </div>
 
-    <div className={styles.selectContainer}>
-      <div className={styles.form}>Agregação</div>
-      <select
-        className="form-select"
-        value={aggregation}
-        onChange={(e) => setAggregation(e.target.value)}
-        disabled={orderBy !== 'none'}
-      >
-        <option value="none">Nenhum</option>
-        <option value="count">COUNT</option>
-        <option value="avg">AVG</option>
-      </select>
-    </div>
-
-    <div className={styles.selectContainer}>
-      <div>Group By</div>
-      <input
-        type="checkbox"
-        checked={groupBy}
-        onChange={(e) => setGroupBy(e.target.checked)}
-      />
-    </div>
+    
   </div>
 )}
 
@@ -276,14 +255,6 @@ const TelaAdm: React.FC = () => {
           {selectedAttributes.map((attr) => (
             <div key={attr}>
               <div>{attr}
-              <select>
-                <option value=">">{'>'}</option>
-                <option value="<">{'<'}</option>
-                <option value="=">{'='}</option>
-                <option value=">=">{'>='}</option>
-                <option value="<=">{'<='}</option>
-                <option value="!=">{'!='}</option>
-              </select>
               <input type="text" className="form-control" onChange={(event) => handleInputChange(attr, event.target.value)}/>
               </div>
             </div>
